@@ -1,0 +1,123 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[letterpaper, margin=.75in]{geometry}
+\usepackage[latin1]{inputenc}
+\usepackage{float}
+\usepackage{xypic}
+\usepackage{graphicx, amsthm, amsmath, amssymb}
+\graphicspath{{images/}{../images/}}
+\usepackage{mathrsfs }
+\usepackage{marginnote}
+\usepackage{multicol}
+\usepackage{subfiles}
+\usepackage{listings}
+
+\lstset{
+  language=bash,
+  basicstyle=\ttfamily,
+  showstringspaces=false,
+  showspaces=false
+}
+
+
+\usepackage{tikz, pgf, calc}
+\usetikzlibrary{arrows,matrix,positioning,fit,calc}
+\usepackage[linewidth=1pt]{mdframed}
+\usepackage{parskip}
+\usepackage{cancel}
+
+
+%% Theorems %%
+\newtheorem{theorem}{Theorem}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\theoremstyle{definition}
+\newtheorem{exmp}{Example}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{lem}{Lemma}[section]
+\newtheorem*{rem}{Remark}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\newcommand{\sumin}{\sum_{i=1}^n}
+\newcommand{\dt}{\Delta t}
+
+\author{\texttt{sh232}}
+\title{CMOR 420/520, Homework \#1: \LaTeX{} Submission}
+
+\begin{document}
+\maketitle
+
+\section{Communicating with remote repository}
+
+1) the git command i use to add, commit, and push a file to a remote repository
+\begin{verbatim}
+
+git add README.md
+git commit -m "push README.md"
+git branch -M main
+git push origin main
+
+\end{verbatim}
+
+2) the output of git log after committing
+\begin{verbatim}
+
+commit db6f94245c9e243ebc9132497a6a016fece7ec70
+Author: shhan <gkstlsgp3as@naver.com>
+Date:   Sat Sep 20 11:11:22 2025 -0500
+
+    push README.md
+    
+\end{verbatim}
+
+\section{A script to push a folder to a remote repository}
+
+The script works as follows. The first line (`\#!/bin/bash`) specifies the interpreter. 
+Next, `git add \$1` stages the folder given as the first argument. 
+The `git commit -m "Adding \$1 to remote repository"` line commits the staged changes with a message that includes the folder name. 
+Finally, `git push origin main` pushes the committed changes to the remote repository.
+
+
+\begin{lstlisting}[caption={A script to push a folder to a remote repository}, label={lst:gitpush}]
+
+#!/bin/bash
+
+git add $1
+git commit -m "Adding $1 to remote repository"
+git push origin main
+
+\end{lstlisting}
+
+However, the current script has a few potential issues. First, it does not check whether an argument is provided. If no argument is given, the script will produce an error. Second, although the script is intended to push a directory to the remote repository, it does not verify that the argument passed is indeed a directory.
+
+Considering these issues, it can be updated as below: 
+
+\begin{lstlisting}[caption={Improved script to push a folder to a remote repository}, label={lst:gitpush}]
+#!/bin/bash
+
+# Check if argument is given
+if [ -z "$1" ]; then
+  echo "Usage: $0 <directory>"
+  exit 1
+fi
+
+# Check if argument is a directory
+if [ ! -d "$1" ]; then
+  echo "Error: $1 is not a directory"
+  exit 1
+fi
+
+git add "$1"
+git commit -m "Adding $1 to remote repository"
+git push origin main
+\end{lstlisting}
+
+
+%bibliographystyle{plain}
+%bibliography{}
+
+\end{document}
